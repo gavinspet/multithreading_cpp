@@ -8,11 +8,20 @@ using namespace std;
 
 void work(int &count , mutex &mtx)
 {  
-    for(int i = 0; i < 1E6; i++)
+    while(true)
     {
-        mtx.lock();
-        count++;
-        mtx.unlock();
+    this_thread::sleep_for(chrono::milliseconds(500));
+    mtx.lock();
+    // for(int i = 0; i < 1E6; i++)
+    // {
+    //     count++;
+    //     // exception ..........
+    // }
+    std::thread::id currentThreadId = std::this_thread::get_id();
+    std::cout << "Current thread ID: " << currentThreadId << std::endl;
+    cout<<"\nRUNNING\n";
+
+    mtx.unlock();
     }
 }
 

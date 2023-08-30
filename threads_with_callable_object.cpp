@@ -4,8 +4,8 @@
 #include<mutex>
 
 using namespace std;
-
-class App
+ 
+ class App
 {
     private:
     mutex mtx;
