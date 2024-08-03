@@ -1,45 +1,37 @@
-#include<iostream>
-#include<thread>
-#include<chrono>
-#include<mutex>
+#include <chrono>
+#include <iostream>
+#include <mutex>
+#include <thread>
 
 using namespace std;
- 
- class App
-{
-    private:
-    mutex mtx;
-    int count = 0;
 
-    public:
-    auto operator()()
-    {
-       for(int i = 0; i < 1E6; i++)
-       {
-            const lock_guard<mutex> guard(mtx);
-            count++;
-        }
-    }
+class App {
+private:
+  mutex mtx;
+  int count = 0;
 
-    int getCount()
-    {
-        return count;
+public:
+  auto operator()() {
+    for (int i = 0; i < 1E6; i++) {
+      const lock_guard<mutex> guard(mtx);
+      count++;
     }
+  }
+
+  int getCount() { return count; }
 };
 
+int main() {
+  App app;
+  // app();
+  // app();
+  thread t1(ref(app));
+  thread t2(ref(app));
+  thread t3(ref(app));
 
-int main()
-{
-    App app;
-    // app();
-    // app();
-    thread t1(ref(app));
-    thread t2(ref(app));
-    thread t3(ref(app));
+  t1.join();
+  t2.join();
+  t3.join();
 
-    t1.join();
-    t2.join();
-    t3.join();
-
-    cout<<app.getCount()<<endl;
+  cout << app.getCount() << endl;
 }

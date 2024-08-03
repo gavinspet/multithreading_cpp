@@ -1,0 +1,51 @@
+User Code                     Compiler                       Execution
+
+  count++;
+    |                            |                             |
+    | Lexical analysis           |                             |
+    | (identify tokens)          |                             |
+    |--------------------------->|                             |
+    |                            |                             |
+    | Syntax analysis (parsing)  |                             |
+    | (check grammar rules)      |                             |
+    |                            |                             |
+    | Semantic analysis          |                             |
+    | (analyze meaning)          |                             |
+    |--------------------------->|                             |
+    |--------------------------->|                             |
+    |                            |                             |
+    | Code generation            |                             |
+    | (produce machine code)     |                             |
+    |--------------------------->|                             |
+    |                            |                             |
+    | Optimization               |                             |
+    | (optional)                 |                             |
+    |--------------------------->|                             |
+    |                            |                             |
+    | Machine code               |                             |
+    | (binary instructions)      |                             |
+    |--------------------------->|                             |
+    |                            |                             |
+    |                          Execution                       |
+    |                            |                             |
+    |                            | Fetch machine code          |
+    |                            | from memory                 |
+    |                            |---------------------------> |
+    |                            |                             |
+    |                            | Decode instructions         |
+    |                            | (understand operation)      |
+    |                            |---------------------------> |
+    |                            |                             |
+    |                            | Load value of `count`       |
+    |                            | from memory into register   |
+    |                            |---------------------------> |
+    |                            |                             |
+    |                            | Perform increment           |
+    |                            | operation in register       |
+    |                            |------------------------->   |
+    |                            |                             |
+    |                            | Store updated value         |
+    |                            | back to `count` in memory   |
+    |                            |---------------------------> |
+    |                            |                             |
+    |                            |                             |

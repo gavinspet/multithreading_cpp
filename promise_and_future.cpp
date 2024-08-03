@@ -1,35 +1,37 @@
-#include<iostream>
-#include<thread>
-#include<math.h>
-#include<mutex>
-#include<future>
+#include <future>
+#include <iostream>
+#include <thread>
 
-using namespace std;
-
-double calculate_pi(int terms)
-{
-    double sum = 0.0;
-    for(int i=0;i<terms; i++)
-    {
-        int exp = pow(-1,i);
-        double term = (1.0/(2*i+1));
-        sum+= (exp*term*4);
-    }
-    return sum;
+// Function to calculate the sum of two numbers and store the result in a
+// promise
+void calculateSum(std::promise<int> &prom, int a, int b) {
+  int sum = a + b;
+  // Set the result in the promise
+  prom.set_value(sum);
 }
 
-int main()
-{
-    promise<double> promise;
-    auto do_pi= [&](int terms)
-    {
-        auto result = calculate_pi(terms);
+int main() {
+  int a = 5;
+  int b = 7;
 
-        promise.set_value(result);
-    };
+  // Create a promise and get a future associated with it
+  std::promise<int> sumPromise;
+  std::future<int> sumFuture = sumPromise.get_future();
 
-    future<double> future = promise.get_future();
+  // Start a thread to calculate the sum asynchronously
+  std::thread sumThread(calculateSum, std::ref(sumPromise), a, b);
 
-    cout<<future.get()<<endl;
+  // Do some other work while the sum is being calculated in the background
 
+  // Wait for the result by calling get() on the future
+  int result = sumFuture.get();
+
+  // The result is now available
+  std::cout << "The sum of " << a << " and " << b << " is: " << result
+            << std::endl;
+
+  // Clean up
+  sumThread.join();
+
+  return 0;
 }

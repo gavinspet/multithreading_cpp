@@ -1,32 +1,29 @@
-#include<iostream>
-#include<thread>
-#include<chrono>
-#include<mutex>
+#include <chrono>
+#include <iostream>
+#include <mutex>
+#include <thread>
 
 using namespace std;
 
-int main()
-{
-    int count = 0;
-    const int INCREMENT = 10000000;
+int main() {
+  int count = 0;
+  const int INCREMENT = 10000000;
 
-    mutex mtx;
+  mutex mtx;
 
-    auto funct = [&](){
+  auto funct = [&]() {
+    for (int i = 0; i < INCREMENT; i++) {
+      mtx.lock();
+      count++;
+      mtx.unlock();
+    }
+  };
 
-        for(int i = 0; i < INCREMENT; i++)
-        {
-            mtx.lock();
-            count++;
-            mtx.unlock();
-        }
-    };
+  thread t1(funct);
+  thread t2(funct);
 
-    thread t1(funct);
-    thread t2(funct);
+  t1.join();
+  t2.join();
 
-    t1.join();
-    t2.join();
-
-    std::cout<<count<<endl;
+  std::cout << count << endl;
 }

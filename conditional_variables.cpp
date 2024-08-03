@@ -1,33 +1,58 @@
-#include <iostream>
-#include <thread>
-#include <chrono>
 #include <condition_variable>
+#include <iostream>
+#include <mutex>
+#include <queue>
+#include <thread>
 
-using namespace std;
+std::mutex mtx;
+std::condition_variable cv;
+std::queue<int> buffer;
 
-int main()
-{
-    condition_variable condition;
-    mutex mtx;
-    bool ready = false;
+const int BUFFER_SIZE = 5;
 
-    thread t1([&](){
-        this_thread::sleep_for(chrono::milliseconds(2000));
-        unique_lock<mutex> lock(mtx);
-        ready = true;
-        lock.unlock();
-        condition.notify_one();
-    });
+void producer() {
+  for (int i = 1; i <= 10; ++i) {
+    std::this_thread::sleep_for(
+        std::chrono::milliseconds(500)); // Simulate some work
+    std::unique_lock<std::mutex> lock(mtx);
 
-    unique_lock<mutex> lock(mtx);
-
-    while(!ready)
-    {
-        condition.wait(lock);
+    while (buffer.size() >= BUFFER_SIZE) {
+      cv.wait(lock); // Wait for the consumer to consume
     }
 
-    cout << "ready " << ready << endl;
+    buffer.push(i);
+    std::cout << "Produced: " << i << std::endl;
 
-    t1.join();
-    return 0;
+    lock.unlock();
+    cv.notify_all(); // Notify the consumer
+  }
+}
+
+void consumer() {
+  for (int i = 1; i <= 10; ++i) {
+    std::this_thread::sleep_for(
+        std::chrono::milliseconds(700)); // Simulate some work
+    std::unique_lock<std::mutex> lock(mtx);
+
+    while (buffer.empty()) {
+      cv.wait(lock); // Wait for the producer to produce
+    }
+
+    int value = buffer.front();
+    buffer.pop();
+    std::cout << "Consumed: " << value << std::endl;
+
+    lock.unlock();
+    cv.notify_all(); // Notify the producer
+  }
+}
+
+int main() {
+  std::thread producer_thread(producer);
+  std::thread consumer_thread(consumer);
+
+  producer_thread.join();
+  consumer_thread.join();
+
+  return 0;
 }

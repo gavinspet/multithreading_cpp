@@ -1,32 +1,27 @@
-#include<iostream>
-#include<thread>
-#include<chrono>
+#include <chrono>
+#include <iostream>
+#include <thread>
 
 using namespace std;
 
-int main()
-{
-    int count = 0;
-    const int INCREMENT = 10000000;
+int main() {
+  int count = 0;
+  const int INCREMENT = 10000000;
 
-    thread t1([&count](){
+  thread t1([&count]() {
+    for (int i = 0; i < INCREMENT; i++) {
+      count++;
+    }
+  });
 
-        for(int i = 0; i < INCREMENT; i++)
-        {
-            count++;
-        }
-    });
+  thread t2([&count]() {
+    for (int i = 0; i < INCREMENT; i++) {
+      count++;
+    }
+  });
 
-     thread t2([&count](){
+  t1.join();
+  t2.join();
 
-        for(int i = 0; i < INCREMENT; i++)
-        {
-            count++;
-        }
-    });
-
-    t1.join();
-    t2.join();
-
-    cout<<count<<endl;
+  cout << count << endl;
 }
