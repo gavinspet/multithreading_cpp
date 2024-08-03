@@ -3,18 +3,16 @@
 #include <mutex>
 #include <thread>
 
-using namespace std;
-
-mutex mtx;
+std::mutex mtx;
 
 void workfunction() {
   for (int i = 0; i < 10; i++) {
-    this_thread::sleep_for(chrono::milliseconds(500));
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-    mtx.lock();
+    mtx.lock(); // will pack call till unlock
     // this_thread::sleep_for(chrono::milliseconds(500));
 
-    cout << "loop " << i << endl;
+    std::cout << "loop " << i << std::endl;
 
     std::thread::id currentThreadId = std::this_thread::get_id();
     std::cout << "Current thread ID: " << currentThreadId << std::endl;
@@ -23,10 +21,10 @@ void workfunction() {
 }
 
 int main() {
-  thread t1(workfunction);
-  thread t2(workfunction);
+  std::thread t1(workfunction);
+  std::thread t2(workfunction);
 
-  cout << "Hello world" << endl;
+  std::cout << "Hello world" << std::endl;
 
   t1.join();
   t2.join();

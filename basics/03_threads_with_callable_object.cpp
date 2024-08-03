@@ -12,7 +12,7 @@ private:
 
 public:
   auto operator()() {
-    for (int i = 0; i < 1E6; i++) {
+    for (int i = 0; i < 10; i++) {
       const lock_guard<mutex> guard(mtx);
       count++;
     }
