@@ -19,7 +19,7 @@ int main() {
   std::future<int> sumFuture = sumPromise.get_future();
 
   // Start a thread to calculate the sum asynchronously
-  std::thread sumThread(calculateSum, std::ref(sumPromise), a, b);
+  std::thread sumThread(calculateSum, std::move(sumPromise), a, b);
 
   // Do some other work while the sum is being calculated in the background
 

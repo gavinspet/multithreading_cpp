@@ -26,8 +26,17 @@ int main() {
 
   std::cout << "Hello world" << std::endl;
 
+ 
+
   t1.join();
   t2.join();
+
+   std::thread s([]()
+  {
+    std::cout<<"meow\n";
+  });
+
+  s.join();
 
   return 0;
 }
